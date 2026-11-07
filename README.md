@@ -39,10 +39,12 @@ Android 使用 CI 注入的自有密钥库签名；Windows、macOS 与 Linux 产
 
 ## 致谢
 
-- **[Mihomo / Clash.Meta](https://github.com/MetaCubeX/mihomo)** — 内核
-- **[FlClash](https://github.com/chen08209/FlClash)** — 本项目的界面与桌面实现来自 FlClash 的代码，原始版权归其作者所有
+ErClash 站在开源社区的肩膀上。
 
-本项目遵循 GPL-3.0 发布，源代码与二进制一并提供。
+- **[Mihomo / Clash.Meta](https://github.com/MetaCubeX/mihomo)** — 内核
+- **[FlClash](https://github.com/chen08209/FlClash)** — 界面血统
+
+本项目遵循 GPL-3.0 发布。
 
 ## 开发
 
