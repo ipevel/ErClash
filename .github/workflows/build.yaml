@@ -1,0 +1,243 @@
+name: build
+
+# 发版构建：Android / Windows / macOS / Linux 全平台产物与 Release
+# 产物命名：ErClash-<version>-<platform>-<arch>，由 flutter_distributor 依据
+# distribute_options.yaml 与各平台 make_config.yaml 生成。
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+
+env:
+  IS_STABLE: ${{ !contains(github.ref, '-') }}
+  IS_PRERELEASE: ${{ contains(github.ref_name, 'pre') }}
+  SHOULD_RELEASE: ${{ !contains(github.ref, '-') || contains(github.ref_name, 'pre') }}
+  GRADLE_OPTS: -Dorg.gradle.vfs.watch=false
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FLUTTER_VERSION: '3.47.7'
+  GO_VERSION: '1.27.x'
+  NDK_VERSION: r28c
+
+jobs:
+  build:
+    name: ${{ matrix.platform }} ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      actions: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Android 三个 ABI
+          - platform: android
+            os: ubuntu-24.04
+            arch: arm64
+          - platform: android
+            os: ubuntu-24.04
+            arch: amd64
+          - platform: android
+            os: ubuntu-24.04
+            arch: arm
+          - platform: android
+            os: ubuntu-24.04
+            arch: universal
+          # Windows：amd64 常规构建，arm64 在 ARM runner 上原生构建；compatible 面向旧 CPU
+          - platform: windows
+            os: windows-2022
+            arch: amd64
+          - platform: windows
+            os: windows-11-arm
+            arch: arm64
+          - platform: windows
+            os: windows-2022
+            arch: amd64
+            compatible: true
+          # macOS：Intel 与 Apple Silicon 各自原生构建
+          - platform: macos
+            os: macos-latest
+            arch: arm64
+          - platform: macos
+            os: macos-15-intel
+            arch: amd64
+          # Linux：amd64 与 arm64
+          - platform: linux
+            os: ubuntu-22.04
+            arch: amd64
+          - platform: linux
+            os: ubuntu-24.04-arm
+            arch: arm64
+          - platform: linux
+            os: ubuntu-22.04
+            arch: amd64
+            compatible: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Rust (ARM host)
+        if: startsWith(matrix.os, 'windows-11-arm') || endsWith(matrix.os, '-arm')
+        shell: bash
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            curl -sSf -o rustup-init.exe https://win.rustup.rs/aarch64
+            ./rustup-init.exe -y --default-toolchain stable --profile minimal
+            echo "$USERPROFILE/.cargo/bin" >> "$GITHUB_PATH"
+          else
+            curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+            echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          fi
+
+      - name: Setup Rust (Android)
+        if: matrix.platform == 'android'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
+
+      - name: Setup Rust (Other)
+        if: matrix.platform != 'android' && !startsWith(matrix.os, 'windows-11-arm') && !endsWith(matrix.os, '-arm')
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: core/go.sum
+
+      - name: Setup Java (Android)
+        if: matrix.platform == 'android'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android NDK
+        if: matrix.platform == 'android'
+        uses: nttld/setup-ndk@v1
+        id: ndk
+        with:
+          ndk-version: ${{ env.NDK_VERSION }}
+          add-to-path: true
+          link-to-sdk: true
+
+      - name: Keep CRLF out of Windows scripts
+        if: matrix.platform == 'windows'
+        run: git config --global core.autocrlf false && git config --global core.longpaths true
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ contains(matrix.os, 'arm') && 'master' || 'stable' }}
+          flutter-version: ${{ contains(matrix.os, 'arm') && '' || env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Setup Xcode (macOS)
+        if: matrix.platform == 'macos'
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.3.app || sudo xcode-select -s /Applications/Xcode_26.2.app
+          xcodebuild -version
+
+      - name: Disable Impeller (Intel macOS)
+        if: matrix.platform == 'macos' && matrix.arch == 'amd64'
+        run: plutil -replace FLTEnableImpeller -bool NO macos/Runner/Info.plist
+
+      # 内核内置该证书包，界面侧从同一份文件读取信任根。
+      # 按哈希固定，更新证书包是一次显式评审的变更。
+      - name: Fetch CA certificates
+        shell: bash
+        env:
+          CA_BUNDLE: cacert-2026-09-25.pem
+          CA_BUNDLE_SHA256: a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505
+        run: |
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/$CA_BUNDLE"
+          echo "$CA_BUNDLE_SHA256  $bundle" | sha256sum -c -
+
+      - name: Setup Android signing
+        if: matrix.platform == 'android'
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo 'KEYSTORE 未配置，跳过发布签名；本次构建回退 debug 签名'
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/keystore.jks
+          {
+            echo "keyAlias=$KEY_ALIAS"
+            echo "storePassword=$STORE_PASSWORD"
+            echo "keyPassword=$KEY_PASSWORD"
+          } >> android/local.properties
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build
+        shell: bash
+        env:
+          ANDROID_NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
+        run: |
+          arch_arg=""
+          if [ "${{ matrix.platform }}" = "android" ]; then
+            arch_arg="--arch ${{ matrix.arch }}"
+          fi
+          compat_arg=""
+          if [ "${{ matrix.compatible }}" = "true" ]; then
+            compat_arg="--compatible"
+          fi
+          dart setup.dart ${{ matrix.platform }} $arch_arg $compat_arg ${{ env.IS_STABLE == 'true' && '--env stable' || '' }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: ErClash-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.compatible == true && '-compatible' || '' }}
+          path: dist/**
+          if-no-files-found: error
+
+  release:
+    name: Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate release notes
+        run: |
+          version=$(echo "${{ github.ref_name }}" | sed 's/^v//')
+          base_version=$(echo "$version" | sed 's/-pre[0-9]*$//')
+          if [ "${{ env.IS_PRERELEASE }}" = "true" ]; then
+            template=./.github/release_template_pre.md
+          else
+            template=./.github/release_template.md
+          fi
+          sed -e "s|BASE_VERSION|$base_version|g" -e "s|VERSION|$version|g" "$template" > release.md
+
+      - name: Publish release
+        if: env.SHOULD_RELEASE == 'true'
+        uses: softprops/action-gh-release@v3.0.0
+        with:
+          files: ./dist/*
+          body_path: ./release.md
+          prerelease: ${{ env.IS_PRERELEASE == 'true' }}

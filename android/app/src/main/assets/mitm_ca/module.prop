@@ -1,0 +1,6 @@
+id=erclash_mitm_ca
+name=ErClash MITM CA
+version=1
+versionCode=1
+author=ErClash
+description=Adds ErClash's MITM certificate to the system's trusted CAs.

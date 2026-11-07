@@ -1,0 +1,12 @@
+## 预发布 / Pre-release
+
+这是预发布版本，功能与接口仍可能调整，请优先使用稳定版。
+
+| 系统 | 直链下载 |
+|:---:|:---|
+| **Android** | <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-android-arm64-v8a.apk"><img src="https://img.shields.io/badge/APK-ARMv8-3DDC84?logo=android&logoColor=white&style=flat-square&labelColor=222222" alt="APK ARMv8"></a> <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-android-armeabi-v7a.apk"><img src="https://img.shields.io/badge/APK-ARMv7-3DDC84?logo=android&logoColor=white&style=flat-square&labelColor=222222" alt="APK ARMv7"></a> <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-android-x86_64.apk"><img src="https://img.shields.io/badge/APK-x86__64-3DDC84?logo=android&logoColor=white&style=flat-square&labelColor=222222" alt="APK x86_64"></a> |
+| **Windows** | <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-windows-amd64-setup.exe"><img src="https://img.shields.io/badge/EXE-x64-0078D4?logo=windows&logoColor=white&style=flat-square&labelColor=222222" alt="EXE x64"></a> <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-windows-arm64-setup.exe"><img src="https://img.shields.io/badge/EXE-ARM64-0078D4?logo=windows&logoColor=white&style=flat-square&labelColor=222222" alt="EXE ARM64"></a> |
+| **macOS** | <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-macos-arm64.dmg"><img src="https://img.shields.io/badge/DMG-Apple%20Silicon-000000?logo=apple&logoColor=white&style=flat-square&labelColor=222222" alt="DMG Apple Silicon"></a> <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-macos-amd64.dmg"><img src="https://img.shields.io/badge/DMG-Intel-000000?logo=apple&logoColor=white&style=flat-square&labelColor=222222" alt="DMG Intel"></a> |
+| **Linux** | <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-linux-amd64.AppImage"><img src="https://img.shields.io/badge/AppImage-x64-FCC624?logo=linux&logoColor=white&style=flat-square&labelColor=222222" alt="AppImage x64"></a> <a href="https://github.com/ipevel/ErClash/releases/download/vVERSION/ErClash-VERSION-linux-arm64.AppImage"><img src="https://img.shields.io/badge/AppImage-ARM64-FCC624?logo=linux&logoColor=white&style=flat-square&labelColor=222222" alt="AppImage ARM64"></a> |
+
+> Windows 与 macOS 产物未做代码签名，详见 [SIGNING-POLICY.md](https://github.com/ipevel/ErClash/blob/main/SIGNING-POLICY.md)。

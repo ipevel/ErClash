@@ -1,0 +1,18 @@
+script_template: inno_setup.iss
+app_id: 0E4C1B7A-6D2F-4A93-8B51-3F7C2E9D4A16
+app_name: ErClash
+publisher: ipevel
+publisher_url: https://github.com/ipevel/ErClash
+display_name: ErClash
+executable_name: ErClash.exe
+output_base_file_name: ErClash.exe
+# Resolved against the project root: flutter_distributor turns this into an
+# absolute path via Directory.current.
+setup_icon_file: windows\runner\resources\app_icon.ico
+locales:
+  # Written into the .iss verbatim, so this one stays relative to the generated
+  # script in dist/.
+  - lang: zh
+    file: ..\windows\packaging\exe\ChineseSimplified.isl
+  - lang: en
+privileges_required: admin
