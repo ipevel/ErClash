@@ -29,6 +29,7 @@ void main() {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',
         verbose: false,
+        splitPerAbi: true,
       );
 
       expect(args, ['dart-define-from-file=env.json', 'split-per-abi']);
@@ -38,6 +39,7 @@ void main() {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',
         verbose: true,
+        splitPerAbi: true,
       );
 
       expect(args, [
