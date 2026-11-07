@@ -107,7 +107,7 @@ ArgParser createSetupArgParser() {
     )
     ..addFlag(
       'compatible',
-      negates: false,
+      negatable: false,
       help: 'Build amd64 with GOAMD64=v1 for wider CPU compatibility',
     )
     ..addFlag(
