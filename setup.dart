@@ -101,7 +101,7 @@ ArgParser createSetupArgParser() {
     )
     ..addOption(
       'arch',
-      valueHelp: 'arm,arm64,amd64',
+      valueHelp: 'arm,arm64,amd64,universal',
       allowed: ['arm', 'arm64', 'amd64', 'universal'],
       help: 'Target architecture (Android only)',
     )
