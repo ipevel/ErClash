@@ -19,7 +19,7 @@ Windows 未签名的后果：首次运行 `setup.exe` 或主程序时，SmartScr
 |---|---|
 | Committers and reviewers | ipevel |
 
-每次变更都通过拉取请求进入 `main`，`main` 要求 `analyze-test` 检查通过。仓库管理员账号启用多因素认证。
+变更通过拉取请求提交，合并前运行 `.github/workflows/pr.yaml` 的 `analyze-test` 检查。当前 `main` 分支尚未启用强制分支保护，是否合并由维护者依据检查结果确认。仓库管理员账号已启用多因素认证。
 
 ## Privacy policy
 
