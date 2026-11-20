@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
+  static String m102(value, port) =>
+      "El puerto mixto no puede ser ${value}, se restableció a ${port}";
+
   static String m0(count) =>
       "${Intl.plural(count, one: '${count} seleccionada', other: '${count} seleccionadas')}";
 
@@ -367,6 +370,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Permitir que las apps eludan la VPN",
     ),
     "allowLan": MessageLookupByLibrary.simpleMessage("Permitir LAN"),
+    "alwaysFindProcess": MessageLookupByLibrary.simpleMessage(
+      "Buscar siempre el proceso",
+    ),
     "allowedIps": MessageLookupByLibrary.simpleMessage("IP permitidas"),
     "alreadyInLocalProxies": m2,
     "answers": MessageLookupByLibrary.simpleMessage("Respuestas"),
@@ -1501,6 +1507,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sin confianza completa",
     ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Puerto mixto"),
+    "mixedPortReset": m102,
     "mode": MessageLookupByLibrary.simpleMessage("Modo"),
     "monochromeIcon": MessageLookupByLibrary.simpleMessage("Icono monocromo"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monocromo"),

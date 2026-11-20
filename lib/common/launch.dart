@@ -34,15 +34,25 @@ class AutoLaunch {
     return launcher.disable();
   }
 
-  Future<void> updateStatus(bool isAutoLaunch) async {
+  Future<void> _update = Future.value();
+
+  /// An update runs after the write of the one before it, so a status read
+  /// never sees the entry half written by a call that started earlier.
+  Future<void> updateStatus(bool isAutoLaunch) {
     if (kDebugMode) {
-      return;
+      return Future.value();
     }
+    final update = _update.then((_) => _apply(isAutoLaunch));
+    _update = update.then<void>((_) {}, onError: (Object _) {});
+    return update;
+  }
+
+  Future<void> _apply(bool isAutoLaunch) async {
     if (await isEnable == isAutoLaunch) return;
     if (isAutoLaunch == true) {
-      unawaited(enable());
+      await enable();
     } else {
-      unawaited(disable());
+      await disable();
     }
   }
 }

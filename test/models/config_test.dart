@@ -635,6 +635,46 @@ void main() {
 
       expect(restored.interfaceNameMode, InterfaceNameMode.clear);
     });
+
+    test('find process defaults to strict and a saved off reads as strict', () {
+      expect(const PatchClashConfig().findProcessMode, FindProcessMode.strict);
+      for (final saved in ['off', 'strict']) {
+        final restored = PatchClashConfig.fromJson({
+          'find-process-mode': saved,
+        });
+        expect(restored.findProcessMode, FindProcessMode.strict, reason: saved);
+      }
+      final always = PatchClashConfig.fromJson({'find-process-mode': 'always'});
+      expect(always.findProcessMode, FindProcessMode.always);
+    });
+  });
+
+  group('PatchClashConfig mixed port', () {
+    test('a stored 0 or a part of a port reads as the default', () {
+      for (final stored in <Object>[0, 0.5, -1, 70000, '7890']) {
+        expect(
+          PatchClashConfig.fromJson({'mixed-port': stored}).mixedPort,
+          defaultMixedPort,
+          reason: '$stored',
+        );
+        expect(unusableMixedPort({'mixed-port': stored}), stored);
+      }
+    });
+
+    test('a usable port and the other ports at 0 are kept', () {
+      final config = PatchClashConfig.fromJson({
+        'mixed-port': 7899,
+        'port': 0,
+        'socks-port': 0,
+      });
+
+      expect(config.mixedPort, 7899);
+      expect(config.port, 0);
+      expect(config.socksPort, 0);
+      expect(unusableMixedPort({'mixed-port': 7899}), isNull);
+      expect(unusableMixedPort(const <String, Object?>{}), isNull);
+      expect(unusableMixedPort('not a map'), isNull);
+    });
   });
 
   group('PatchClashConfig.ensureControllerSecret', () {
@@ -1104,7 +1144,7 @@ void main() {
           'themeProps': const ThemeProps().toJson(),
           'overrideDns': overrideDns,
           'patchClashConfig': {
-            'dns-override-keys': ['nameserver', 'respect-rules'],
+            'dns-override-keys': ['nameserver', 'nameserver-policy'],
           },
         });
 

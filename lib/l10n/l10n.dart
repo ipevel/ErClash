@@ -405,6 +405,16 @@ class AppLocalizations {
     return Intl.message('Allow LAN', name: 'allowLan', desc: '', args: []);
   }
 
+  /// `Always find process`
+  String get alwaysFindProcess {
+    return Intl.message(
+      'Always find process',
+      name: 'alwaysFindProcess',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `TUN`
   String get tun {
     return Intl.message('TUN', name: 'tun', desc: '', args: []);
@@ -3714,6 +3724,16 @@ class AppLocalizations {
   /// `Mixed port`
   String get mixedPort {
     return Intl.message('Mixed port', name: 'mixedPort', desc: '', args: []);
+  }
+
+  /// `The mixed port cannot be {value}, so it was set back to {port}`
+  String mixedPortReset(Object value, Object port) {
+    return Intl.message(
+      'The mixed port cannot be $value, so it was set back to $port',
+      name: 'mixedPortReset',
+      desc: '',
+      args: [value, port],
+    );
   }
 
   /// `SOCKS port`

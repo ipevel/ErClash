@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
+  static String m102(value, port) => "混合ポートを ${value} にはできないため、${port} に戻しました";
+
   static String m0(count) => "${count} 件選択済み";
 
   static String m1(name) => "${name} をローカルプロキシに追加しました";
@@ -307,6 +309,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "allowBypass": MessageLookupByLibrary.simpleMessage("アプリによるVPNバイパスを許可"),
     "allowLan": MessageLookupByLibrary.simpleMessage("LANプロキシ"),
+    "alwaysFindProcess": MessageLookupByLibrary.simpleMessage("常にプロセスを検出"),
     "allowedIps": MessageLookupByLibrary.simpleMessage("許可する IP"),
     "alreadyInLocalProxies": m2,
     "answers": MessageLookupByLibrary.simpleMessage("応答"),
@@ -1192,6 +1195,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mitmTrustReady": MessageLookupByLibrary.simpleMessage("信頼済み"),
     "mitmTrustUntrusted": MessageLookupByLibrary.simpleMessage("完全には信頼されていません"),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixedポート"),
+    "mixedPortReset": m102,
     "mode": MessageLookupByLibrary.simpleMessage("モード"),
     "monochromeIcon": MessageLookupByLibrary.simpleMessage("モノクロームアイコン"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("モノクローム"),

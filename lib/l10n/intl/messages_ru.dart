@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
+  static String m102(value, port) =>
+      "Смешанный порт не может быть ${value}, он возвращён к ${port}";
+
   static String m0(count) => "Выбрано: ${count}";
 
   static String m1(name) => "«${name}» добавлен в локальные прокси";
@@ -358,6 +361,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Разрешить приложениям обходить VPN",
     ),
     "allowLan": MessageLookupByLibrary.simpleMessage("Разрешить LAN"),
+    "alwaysFindProcess": MessageLookupByLibrary.simpleMessage(
+      "Всегда искать процесс",
+    ),
     "allowedIps": MessageLookupByLibrary.simpleMessage("Разрешённые IP"),
     "alreadyInLocalProxies": m2,
     "answers": MessageLookupByLibrary.simpleMessage("Ответы"),
@@ -1466,6 +1472,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Доверие неполное",
     ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Смешанный порт"),
+    "mixedPortReset": m102,
     "mode": MessageLookupByLibrary.simpleMessage("Режим"),
     "monochromeIcon": MessageLookupByLibrary.simpleMessage(
       "Монохромный значок",

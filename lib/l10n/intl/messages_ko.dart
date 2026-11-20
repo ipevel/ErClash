@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ko';
 
+  static String m102(value, port) => "혼합 포트는 ${value}일 수 없어 ${port}(으)로 되돌렸습니다";
+
   static String m0(count) => "${count}개 선택됨";
 
   static String m1(name) => "${name}을(를) 로컬 프록시에 추가했습니다";
@@ -307,6 +309,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "allowBypass": MessageLookupByLibrary.simpleMessage("앱의 VPN 우회 허용"),
     "allowLan": MessageLookupByLibrary.simpleMessage("LAN 허용"),
+    "alwaysFindProcess": MessageLookupByLibrary.simpleMessage("항상 프로세스 찾기"),
     "allowedIps": MessageLookupByLibrary.simpleMessage("허용 IP"),
     "alreadyInLocalProxies": m2,
     "answers": MessageLookupByLibrary.simpleMessage("응답"),
@@ -1176,6 +1179,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mitmTrustReady": MessageLookupByLibrary.simpleMessage("신뢰됨"),
     "mitmTrustUntrusted": MessageLookupByLibrary.simpleMessage("완전히 신뢰되지 않음"),
     "mixedPort": MessageLookupByLibrary.simpleMessage("혼합 포트"),
+    "mixedPortReset": m102,
     "mode": MessageLookupByLibrary.simpleMessage("모드"),
     "monochromeIcon": MessageLookupByLibrary.simpleMessage("모노크롬 아이콘"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("모노크롬"),

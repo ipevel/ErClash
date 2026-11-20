@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_CN';
 
+  static String m102(value, port) => "混合端口不能是 ${value}，已恢复为 ${port}";
+
   static String m0(count) => "已选 ${count}";
 
   static String m1(name) => "已将 ${name} 添加到本地代理";
@@ -299,6 +301,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "allowBypass": MessageLookupByLibrary.simpleMessage("允许应用绕过VPN"),
     "allowLan": MessageLookupByLibrary.simpleMessage("局域网代理"),
+    "alwaysFindProcess": MessageLookupByLibrary.simpleMessage("始终查找进程"),
     "allowedIps": MessageLookupByLibrary.simpleMessage("允许的 IP"),
     "alreadyInLocalProxies": m2,
     "answers": MessageLookupByLibrary.simpleMessage("应答"),
@@ -1080,6 +1083,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mitmTrustReady": MessageLookupByLibrary.simpleMessage("已信任"),
     "mitmTrustUntrusted": MessageLookupByLibrary.simpleMessage("未完全信任"),
     "mixedPort": MessageLookupByLibrary.simpleMessage("混合端口"),
+    "mixedPortReset": m102,
     "mode": MessageLookupByLibrary.simpleMessage("模式"),
     "monochromeIcon": MessageLookupByLibrary.simpleMessage("单色图标"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("单色"),
