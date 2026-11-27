@@ -16,11 +16,10 @@ import com.erclash.app.common.quickIntent
 import com.erclash.app.common.receiveBroadcastFlow
 import com.erclash.app.common.startForeground
 import com.erclash.app.common.toPendingIntent
-import com.erclash.app.core.Core
 import com.erclash.app.service.R
 import com.erclash.app.service.ServiceConfig
+import com.erclash.app.service.SpeedTextReader
 import com.erclash.app.service.models.NotificationParams
-import com.erclash.app.service.models.getSpeedTrafficText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -38,18 +37,20 @@ private data class ExtendedNotificationParams(
     val contentText: String,
 )
 
-private val NotificationParams.extended: ExtendedNotificationParams
-    get() = ExtendedNotificationParams(
-        title,
-        stopText,
-        showStopAction,
-        Core.getSpeedTrafficText(onlyStatisticsProxy),
-    )
-
 internal class NotificationModule(
     private val service: Service,
     private val scope: CoroutineScope,
 ) : ServiceModule {
+    private val speedTexts = SpeedTextReader()
+
+    private val NotificationParams.extended: ExtendedNotificationParams
+        get() = ExtendedNotificationParams(
+            title,
+            stopText,
+            showStopAction,
+            speedTexts.read(onlyStatisticsProxy),
+        )
+
     override fun start() {
         service.ensureNotificationChannel()
         update(ServiceConfig.notificationParams.value.extended)
