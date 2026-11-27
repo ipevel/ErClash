@@ -251,6 +251,8 @@ class _EditorPageState extends ConsumerState<EditorPage>
     _heldDocument = null;
     if (held != null) {
       _show(held);
+    } else {
+      setState(() {});
     }
   }
 
@@ -446,6 +448,7 @@ class _EditorPageState extends ConsumerState<EditorPage>
                 schema: widget.schema,
                 readOnly: readOnly,
                 undoController: _undoController,
+                showsLoading: routeSettled,
                 onReady: _handleReady,
               ),
             ),
@@ -465,6 +468,10 @@ class EditorView extends ConsumerStatefulWidget {
   final EditorSchema schema;
   final bool readOnly;
   final UndoRedoController? undoController;
+
+  /// Whether the loading indicator may show: the page holds it back until the
+  /// route that brought it in has settled.
+  final bool showsLoading;
   final VoidCallback? onReady;
 
   const EditorView({
@@ -474,6 +481,7 @@ class EditorView extends ConsumerStatefulWidget {
     this.schema = EditorSchema.config,
     this.readOnly = false,
     this.undoController,
+    this.showsLoading = true,
     this.onReady,
   });
 
@@ -567,7 +575,8 @@ class EditorViewState extends ConsumerState<EditorView> {
       language: widget.language,
       schema: widget.schema,
       error: _initError,
-      isLoading: _initError == null && controller == null,
+      isLoading:
+          widget.showsLoading && _initError == null && controller == null,
     );
   }
 }

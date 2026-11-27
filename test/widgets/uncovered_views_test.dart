@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:erclash/common/constant.dart';
 import 'package:erclash/common/l10n_labels.dart';
 import 'package:erclash/common/request.dart';
 import 'package:erclash/enum/enum.dart';
@@ -253,7 +254,8 @@ void main() {
     await tester.pump();
 
     expect(find.byType(AboutView), findsOneWidget);
-    expect(find.text('Telegram'), findsOneWidget);
+    expect(find.text('github.com/$repository'), findsOneWidget);
+    expect(find.text('github.com/MetaCubeX/mihomo'), findsOneWidget);
     final hero = find.byWidgetPredicate(
       (widget) => widget.runtimeType.toString() == '_AboutHero',
     );
